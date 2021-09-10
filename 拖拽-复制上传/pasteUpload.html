@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="Author" content="阿飞飞">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .pasteArea {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 1px solid #aaaaaa;
+        }
+
+        p {
+            text-align: center;
+            color: #bbbbbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="pasteArea">
+        <p>请先复制图片后在执行粘贴操作</p>
+    </div>
+    <script>
+
+        const pasteBox = document.querySelectorAll('.pasteArea')[0];
+        const IMAGE_MIME_REGEX = /^image\/(jpe?g|gif|png)$/i;
+        pasteBox.addEventListener('paste', async (e) => {
+            console.log(e);
+            e.preventDefault();
+            if (navigator.clipboard) {
+                try {
+                    const clipboardItems = await navigator.clipboard.read();
+                    console.log(clipboardItems);
+                    for (const clipboardItem of clipboardItems) {
+                        for (const type of clipboardItem.types) {
+
+                            if (IMAGE_MIME_REGEX.test(type)) {
+                                const blob = await clipboardItem.getType(type);
+                                console.log(blob);
+                            }
+                        }
+                    }
+                } catch (err) {
+
+                }
+            }else{
+                const items = e.clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (IMAGE_MIME_REGEX.test(items[i].type)) {
+                        let file = items[i].getAsFile();
+                        console.log(file);
+                        imagePreview(file, pasteBox)
+                    }
+                }
+            }
+
+        });
+
+        /*图片预览*/
+        function imagePreview(file, container) {
+            if (IMAGE_MIME_REGEX.test(file.type)) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    let img = document.createElement('img');
+                    img.src = e.target.result;
+                    container.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+    </script>
+</body>
+</html>

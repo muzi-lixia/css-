@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>圆角三角形渐变</title>
+    <meta name="Author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        *{margin:0;padding:0;}
+        .box {
+            overflow: hidden;
+            margin: 100px auto;
+            width: 200px;
+            height: 200px;
+            transform: rotate(30deg) skewY(30deg) scaleX(0.866);
+            /*border: 1px solid #000;*/
+            border-radius: 20%;
+        }
+        .box::before,
+        .box::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+        }
+        .box::before {
+            border-radius: 20% 20% 20% 55%;
+            transform: scaleX(1.155) skewY(-30deg) rotate(-30deg) translateY(-42.3%) skewX(30deg) scaleY(0.866) translateX(-24%);
+        }
+        .box::after {
+            border-radius: 20% 20% 55% 20%;
+            transform: scaleX(1.155) skewY(-30deg) rotate(-30deg) translateY(-42.3%) skewX(-30deg) scaleY(0.866) translateX(24%);
+        }
+        .box::before,
+        .box::after {
+            background: linear-gradient(#0f0, #03a9f4);
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+</body>
+</html>

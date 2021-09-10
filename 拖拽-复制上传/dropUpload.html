@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="Author" content="阿飞飞">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        *{margin:0;padding:0;}
+        .dropArea{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 1px solid #666666;
+        }
+        p{
+            text-align: center;
+            color: #aaaaaa;
+        }
+        .dropArea.highlighted {
+            background-color: #ddd;
+        }
+        .imagePreview {
+            max-height: 250px;
+        }
+        .imagePreview img {
+            width: 100%;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="dropArea">
+        <p>拖拽上传文件</p>
+        <div class="imagePreview"></div>
+    </div>
+    <script>
+        const dropBox = document.querySelectorAll('.dropArea')[0];
+        const imageBox = document.querySelectorAll('.imagePreview')[0];
+        const IMAGE_MIME_REGEX = /^image\/(jpe?g|gif|png)$/i;
+        ["dragenter", "dragover", "dragleave", "drop"].forEach(item => {
+            dropBox.addEventListener(item, preventDefaults, false);
+            // document.body.addEventListener(item, preventDefaults, false);
+        });
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        ["dragenter", "dragover"].forEach(item => {
+            dropBox.addEventListener(item, setHighlighted, false);
+        });
+        ["dragleave", "drop"].forEach(item => {
+            dropBox.addEventListener(item, unHighlighted, false);
+        });
+        function setHighlighted() {
+            dropBox.classList.add('highlighted');
+        }
+        function unHighlighted() {
+            dropBox.classList.remove('highlighted');
+        }
+        dropBox.addEventListener('drop', handleDrop, false);
+        function handleDrop(e) {
+            const dataTransfer = e.dataTransfer;
+            const files = [...dataTransfer.files];
+            files.forEach(item => {
+                imagePreview(item, imageBox);
+            });
+            files.forEach((file) => {
+                upload({
+                    url: "/single",
+                    file,
+                });
+            });
+        }
+        /*文件预览*/
+        function imagePreview(file, container) {
+            if (IMAGE_MIME_REGEX.test(file.type)) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    let img = document.createElement('img');
+                    img.src = e.target.result;
+                    container.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        const request = axios.create({
+            baseURL: "http://localhost:3000/upload",
+            timeout: 60000,
+        });
+        /*文件上传*/
+        function upload({ url, file, fieldName = "file" }) {
+            let formData = new FormData();
+            formData.set(fieldName, file);
+            request.post(url, formData, {
+                // 监听上传进度
+                onUploadProgress: function (progressEvent) {
+                    const percentCompleted = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    console.log(percentCompleted);
+                },
+            });
+        }
+
+    </script>
+</body>
+</html>

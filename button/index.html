@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="Author" content="阿飞飞">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            color: #fff;
+            font-size: 25px;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+            background-size: 400%;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            animation: btnMove 8s linear infinite;
+        }
+
+        @keyframes btnMove {
+            0% {
+                background-position: 0;
+            }
+            100% {
+                background-position: 400%;
+            }
+        }
+        .btn::before {
+            position: absolute;
+            content: '';
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            z-index: -1;
+            background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+            background-size: 400%;
+            border-radius: 40px;
+            opacity: 0;
+            transition: 0.5s;
+        }
+        .btn:hover::before {
+            filter: blur(20px);
+            opacity: 1;
+            animation: btnMove 8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="btn">hover一下</div>
+</body>
+</html>

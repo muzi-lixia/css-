@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>圆角三角形</title>
+    <meta name="Author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        *{margin:0;padding:0;}
+        .box {
+            margin: 50px auto;
+            position: relative;
+            background-color: #666666;
+        }
+        .box, .box::after, .box::before {
+            width: 200px;
+            height: 200px;
+            border-top-right-radius: 30%;
+        }
+        .box::after, .box::before {
+            position: absolute;
+            content: '';
+            /*background-color: rgba(250, 215, 210, .5);*/
+            background-color: #666666;
+        }
+        .box {
+            transform: rotate(-60deg) skewX(-30deg) scale(1, .866);
+        }
+        .box::after {
+            transform: rotate(135deg) skewY(-45deg) scale(.707, 1.414) translate(50%);
+        }
+        .box:before {
+            transform: rotate(-135deg) skewX(-45deg) scale(1.414, .707) translate(0,-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+</body>
+</html>

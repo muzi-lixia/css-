@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="Author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #canvas {
+            background-color: #aaaaaa;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+
+        (function () {
+
+            class Bubble {
+                constructor(x, y) {
+                    this.x = x; // 坐标
+                    this.y = y;
+                    this.vx = Math.random() * 3 - 1.5;  // 速度
+                    this.vy = Math.random() * 3 - 1.5;
+                    this.r = Math.random() * 3 + 3;     // 半径
+                    this.dead = false;
+                    this.color = '#' + Math.random().toString(16).slice(4, 10);
+                }
+                render(ctx) {
+                    ctx.beginPath();
+                    ctx.fillStyle = this.color;
+                    ctx.globalCompositeOperation = 'lighter';
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                update() {
+                    this.r *= 0.96;
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.r <= 0.01) {
+                        this.dead = true;
+                    }
+                }
+            }
+
+            let canvas,
+                ctx,
+                timer = null,
+                bubbles = [];
+            (function init() {
+                canvas = document.querySelector('#canvas');
+                ctx = canvas.getContext('2d');
+                canvas.width = document.documentElement.clientWidth;
+                canvas.height = document.documentElement.clientHeight;
+                auto();
+            })();
+
+            (function () {
+                window.addEventListener('resize', handleResize);
+                canvas.addEventListener('mousemove', handleMouseMove);
+            })();
+
+            function auto() {
+                clearInterval(timer);
+                timer = setInterval(() => {
+                    bubbles.push(new Bubble(canvas.width * Math.random(), canvas.height * Math.random()));
+                }, 30)
+            }
+            (function render () {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                bubbles.forEach(bubble => {
+                    bubble.render(ctx);
+                    bubble.update();
+                });
+                bubbles = bubbles.filter(bubble => {return !bubble.dead});
+                requestAnimationFrame(() => render());
+            })();
+
+            //鼠标事件
+            function handleMouseMove(e) {
+                bubbles.push(new Bubble(e.offsetX, e.offsetY));
+            }
+            function handleResize() {
+                canvas.style.width = document.documentElement.clientWidth + 'px';
+                canvas.style.height = document.documentElement.clientHeight + 'px';
+            }
+        })();
+
+    </script>
+</body>
+</html>

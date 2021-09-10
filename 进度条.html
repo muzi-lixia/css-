@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            margin: 0 auto;
+            width: 50%;
+            text-align: center;
+        }
+
+        #circle {
+            transition: all .5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="50" fill="none" stroke-width="10" stroke="gray" />
+            <circle id="circle" stroke-linecap="round" cx="100" cy="100" r="50" fill="none" stroke-width="10"
+                stroke="pink" stroke-dasharray="0 314" transform="rotate(-90, 100, 100)" />
+
+            <text x="100" y="100" fill="#6b778c" text-anchor="middle" dominant-baseline="central">
+                <tspan id="percent">0</tspan>%
+            </text>
+        </svg>
+        <div>
+            <button onclick="add()">add</button>
+            <button onclick="minus()">minus</button>
+        </div>
+    </div>
+
+    <script>
+
+        let circle = document.getElementById('circle');
+        let percent = document.getElementById('percent');
+
+        let radius = 50;
+        let v = 0.5;
+
+        function minus() {
+            v = v - 0.01
+            if (v <= 0) {
+                v = 0;
+            }
+            set(v);
+        }
+        function add() {
+            v = v + 0.01;
+            if (v >= 1) {
+                v = 1;
+            }
+            set(v);
+        }
+
+        function set(p) {
+            let total = Math.PI * 2 * radius;
+            percent.innerHTML = Math.round(p * 100);
+            let str = `${p * total} ${total * (1 - p)}`;
+            console.log('stroke-dasharray:', str);
+            circle.style['stroke-dasharray'] = str;
+        }
+
+        setTimeout(() => {
+            set(v)
+        }, 1000);
+
+
+    </script>
+</body>
+
+</html>
